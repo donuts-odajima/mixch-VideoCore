@@ -97,7 +97,7 @@ namespace videocore { namespace iOS {
         // querying for kAudioConverterPropertyMaximumOutputPacketSize property below
         in.mChannelsPerFrame = channelCount;
         in.mBitsPerChannel = 32;
-        in.mFormatFlags =  kAudioFormatFlagIsSignedInteger | kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked;
+        in.mFormatFlags =  kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked | kAudioFormatFlagIsNonInterleaved;
         in.mFormatID = kAudioFormatLinearPCM;
         in.mFramesPerPacket = 1;
         in.mBytesPerFrame = in.mBitsPerChannel * in.mChannelsPerFrame / 8;
