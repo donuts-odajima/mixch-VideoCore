@@ -100,7 +100,7 @@ namespace videocore {
     m_frameDuration(frameDuration),
     m_outChannelCount(outChannelCount),
     m_outFrequencyInHz(outFrequencyInHz),
-    m_outBitsPerChannel(16),
+    m_outBitsPerChannel(outBitsPerChannel),
     m_exiting(false),
     m_mixQueue("com.videocore.audiomix", kJobQueuePriorityHigh),
     m_outgoingWindow(nullptr),

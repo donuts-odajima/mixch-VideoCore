@@ -96,7 +96,7 @@ namespace videocore { namespace iOS {
         // passing anything except 2 for mChannelsPerFrame results in "!dat" OSStatus when
         // querying for kAudioConverterPropertyMaximumOutputPacketSize property below
         in.mChannelsPerFrame = channelCount;
-        in.mBitsPerChannel = 16;
+        in.mBitsPerChannel = 32;
         in.mFormatFlags =  kAudioFormatFlagIsSignedInteger | kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked;
         in.mFormatID = kAudioFormatLinearPCM;
         in.mFramesPerPacket = 1;
