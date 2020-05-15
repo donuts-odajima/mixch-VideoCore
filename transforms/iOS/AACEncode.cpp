@@ -100,7 +100,7 @@ namespace videocore { namespace iOS {
         in.mFormatFlags =  kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked | kAudioFormatFlagIsNonInterleaved;
         in.mFormatID = kAudioFormatLinearPCM;
         in.mFramesPerPacket = 1;
-        in.mBytesPerFrame = in.mBitsPerChannel * in.mChannelsPerFrame / 8;
+        in.mBytesPerFrame = 4;
         in.mBytesPerPacket = in.mFramesPerPacket*in.mBytesPerFrame;
         
         m_in = in;
