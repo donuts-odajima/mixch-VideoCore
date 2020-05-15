@@ -100,7 +100,7 @@ namespace videocore { namespace iOS {
         in.mFormatFlags =  kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked | kAudioFormatFlagIsNonInterleaved;
         in.mFormatID = kAudioFormatLinearPCM;
         in.mFramesPerPacket = 1;
-        in.mBytesPerFrame = in.mBitsPerChannel / 8;
+        in.mBytesPerFrame = in.mBitsPerChannel * in.mChannelsPerFrame / 8;
         in.mBytesPerPacket = in.mFramesPerPacket*in.mBytesPerFrame;
         
         m_in = in;
@@ -147,7 +147,7 @@ namespace videocore { namespace iOS {
         if(result == noErr) {
             m_outputPacketMaxSize = outputPacketSize;
             
-            m_bytesPerSample = 2 * channelCount;
+            m_bytesPerSample = 4 * channelCount;
             
             uint8_t sampleRateIndex = 0;
             switch(frequencyInHz) {
