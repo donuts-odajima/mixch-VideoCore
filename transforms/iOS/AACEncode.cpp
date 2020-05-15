@@ -147,7 +147,7 @@ namespace videocore { namespace iOS {
         if(result == noErr) {
             m_outputPacketMaxSize = outputPacketSize;
             
-            m_bytesPerSample = 4 * channelCount;
+            m_bytesPerSample = 4;
             
             uint8_t sampleRateIndex = 0;
             switch(frequencyInHz) {
