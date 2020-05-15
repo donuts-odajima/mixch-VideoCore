@@ -228,7 +228,7 @@ namespace videocore { namespace iOS {
     AACEncode::pushBuffer(const uint8_t* const data, size_t size, IMetadata& metadata)
     {
         const size_t sampleCount = size / m_bytesPerSample;
-        const size_t aac_packet_count = sampleCount / kSamplesPerFrame + (sampleCount % kSamplesPerFrame);
+        const size_t aac_packet_count = (sampleCount % kSamplesPerFrame) == 0 ? (sampleCount / kSamplesPerFrame) : (sampleCount / kSamplesPerFrame) + 1;
         const size_t required_bytes = aac_packet_count * m_outputPacketMaxSize;
         
         if(m_outputBuffer.total() < (required_bytes)) {
