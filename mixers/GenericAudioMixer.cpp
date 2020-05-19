@@ -213,6 +213,10 @@ namespace videocore {
                     size_t startOffset = 0;
                 
                     MixWindow* window = currentWindow;
+                    MixWindow* realCurrentWindow = m_currentWindow;
+                    if (window != realCurrentWindow) {
+                        DLog("Target window is not currentWindow!\n");
+                    }
                 
                     auto diff = std::chrono::duration_cast<std::chrono::microseconds>(mixTime - window->start).count();
 
