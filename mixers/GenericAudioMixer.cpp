@@ -223,14 +223,10 @@ namespace videocore {
                     if(diff > 0) {
                         startOffset = size_t((float(diff) / 1.0e6f) * m_outFrequencyInHz * m_bytesPerSample) & ~(m_bytesPerSample-1);
                         DLog("startOffset = %d.\n", startOffset);
-                        // if startOffset is greater than window->size, drop these audio frames and return
-                        if (startOffset >= window->size) {
-                            return;
+                        while ( startOffset >= window->size ) {
+                            startOffset = (startOffset - window->size);
+                            window = window->next;
                         }
-//                        while ( startOffset >= window->size ) {
-//                            startOffset = (startOffset - window->size);
-//                            window = window->next;
-//                        }
                         
                     } else {
                         startOffset = 0;
@@ -423,7 +419,8 @@ namespace videocore {
             if( now >= m_currentWindow->next->start ) {
                 
                 auto currentTime = m_nextMixTime;
-                
+                auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_currentWindow->next->start).count;
+                DLog("Now and nextWindow diff: %d.\n", diff);
                 
                 MixWindow* currentWindow = m_currentWindow;
                 MixWindow* nextWindow = currentWindow->next;
