@@ -223,11 +223,14 @@ namespace videocore {
                     if(diff > 0) {
                         startOffset = size_t((float(diff) / 1.0e6f) * m_outFrequencyInHz * m_bytesPerSample) & ~(m_bytesPerSample-1);
                         DLog("startOffset = %d.\n", startOffset);
-                        while ( startOffset >= window->size ) {
-                            startOffset = (startOffset - window->size);
-                            window = window->next;
-                            
+                        // if startOffset is greater than window->size, drop these audio frames and return
+                        if (startOffset >= window->size) {
+                            return;
                         }
+//                        while ( startOffset >= window->size ) {
+//                            startOffset = (startOffset - window->size);
+//                            window = window->next;
+//                        }
                         
                     } else {
                         startOffset = 0;
