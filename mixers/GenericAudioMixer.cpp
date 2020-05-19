@@ -219,7 +219,7 @@ namespace videocore {
                     }
                 
                     auto diff = std::chrono::duration_cast<std::chrono::microseconds>(mixTime - window->start).count();
-
+                    diff = 0;
                     if(diff > 0) {
                         startOffset = size_t((float(diff) / 1.0e6f) * m_outFrequencyInHz * m_bytesPerSample) & ~(m_bytesPerSample-1);
                         DLog("startOffset = %d.\n", startOffset);
