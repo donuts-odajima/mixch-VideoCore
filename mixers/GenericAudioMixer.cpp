@@ -419,7 +419,7 @@ namespace videocore {
             if( now >= m_currentWindow->next->start ) {
                 
                 auto currentTime = m_nextMixTime;
-                auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_currentWindow->next->start).count;
+                auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_currentWindow->next->start).count();
                 DLog("Now and nextWindow diff: %d.\n", diff);
                 
                 MixWindow* currentWindow = m_currentWindow;
