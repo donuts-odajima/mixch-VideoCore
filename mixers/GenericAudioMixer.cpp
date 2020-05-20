@@ -238,6 +238,14 @@ namespace videocore {
                         } else {
                             startOffset = 0;
                         }
+                        if (startOffset > 2000) {
+                            // still drop
+                            auto sampleDuration = double(ret->size()) / double(m_bytesPerSample * m_outFrequencyInHz);
+                            m_lastSampleTime[hash] = mixTime + std::chrono::microseconds(int64_t(sampleDuration*1.0e6));
+                            // AudioFrames drop
+                            DLog("Drop Audio Frames!!!\n");
+                            return;
+                        }
                         needCalcOffset = false;
                     }
 
