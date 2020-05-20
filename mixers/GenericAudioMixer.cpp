@@ -210,7 +210,7 @@ namespace videocore {
                     MixWindow* window = currentWindow;
                     if (window != m_currentWindow) {
                         DLog("Window is not current!!!\n");
-                        window = m_currentWindow
+                        window = m_currentWindow;
                     }
                     auto lastStartOffset = m_lastStartOffset.find(hash);
 
@@ -247,7 +247,7 @@ namespace videocore {
                             auto sampleDuration = double(ret->size()) / double(m_bytesPerSample * m_outFrequencyInHz);
                             m_lastSampleTime[hash] = mixTime + std::chrono::microseconds(int64_t(sampleDuration*1.0e6));
                             // AudioFrames drop
-                            DLog("Still Drop Audio Frames!!!\n");
+                            DLog("Still Drop Audio Frames!!! startOffset: %d\n", startOffset);
                             return;
                         }
                         needCalcOffset = false;
