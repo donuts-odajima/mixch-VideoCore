@@ -223,7 +223,7 @@ namespace videocore {
                     
                     if(diff > 0) {
                         startOffset = size_t((float(diff) / 1.0e6f) * m_outFrequencyInHz * m_bytesPerSample) & ~(m_bytesPerSample-1);
-                        DLog("diff: %d, anotherDiff: %d, startOffset = %d.\n", diff, anotherDiff, startOffset);
+                        DLog("diff: %d, anotherDiff: %d, mixTime - cMixTime: %d, startOffset = %d.\n", diff, anotherDiff, diff - anotherDiff, startOffset);
                         while ( startOffset >= window->size ) {
                             startOffset = (startOffset - window->size);
                             window = window->next;
@@ -263,7 +263,7 @@ namespace videocore {
                             so = 0;
                         }
                     }
-                    m_lastSampleTime[hash] = cMixTime + std::chrono::microseconds(int64_t(sampleDuration*1.0e6));
+                    m_lastSampleTime[hash] = mixTime + std::chrono::microseconds(int64_t(sampleDuration*1.0e6));
                     
                 });
 
