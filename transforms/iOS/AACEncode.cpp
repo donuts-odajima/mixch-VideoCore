@@ -96,11 +96,11 @@ namespace videocore { namespace iOS {
         // passing anything except 2 for mChannelsPerFrame results in "!dat" OSStatus when
         // querying for kAudioConverterPropertyMaximumOutputPacketSize property below
         in.mChannelsPerFrame = channelCount;
-        in.mBitsPerChannel = 32;
-        in.mFormatFlags =  kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked | kAudioFormatFlagIsNonInterleaved;
+        in.mBitsPerChannel = 16;
+        in.mFormatFlags =  kAudioFormatFlagIsSignedInteger | kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked;
         in.mFormatID = kAudioFormatLinearPCM;
         in.mFramesPerPacket = 1;
-        in.mBytesPerFrame = 4;
+        in.mBytesPerFrame = in.mBitsPerChannel * in.mChannelsPerFrame / 8;
         in.mBytesPerPacket = in.mFramesPerPacket*in.mBytesPerFrame;
         
         m_in = in;
@@ -147,7 +147,7 @@ namespace videocore { namespace iOS {
         if(result == noErr) {
             m_outputPacketMaxSize = outputPacketSize;
             
-            m_bytesPerSample = 4 * channelCount;
+            m_bytesPerSample = 2 * channelCount;
             
             uint8_t sampleRateIndex = 0;
             switch(frequencyInHz) {
@@ -228,7 +228,7 @@ namespace videocore { namespace iOS {
     AACEncode::pushBuffer(const uint8_t* const data, size_t size, IMetadata& metadata)
     {
         const size_t sampleCount = size / m_bytesPerSample;
-        const size_t aac_packet_count = (sampleCount % kSamplesPerFrame) == 0 ? (sampleCount / kSamplesPerFrame) : (sampleCount / kSamplesPerFrame) + 1;
+        const size_t aac_packet_count = sampleCount / kSamplesPerFrame;
         const size_t required_bytes = aac_packet_count * m_outputPacketMaxSize;
         
         if(m_outputBuffer.total() < (required_bytes)) {

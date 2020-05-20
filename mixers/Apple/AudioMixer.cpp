@@ -72,8 +72,8 @@ namespace videocore { namespace Apple {
         if(m_outFrequencyInHz == inFrequncyInHz &&
            m_outBitsPerChannel == inBitsPerChannel &&
            m_outChannelCount == inChannelCount
-           && (inFlags & kAudioFormatFlagIsNonInterleaved)
-           && (inFlags & kAudioFormatFlagIsFloat))
+           && !(inFlags & kAudioFormatFlagIsNonInterleaved)
+           && !(inFlags & kAudioFormatFlagIsFloat))
         {
             // No resampling necessary
             return std::make_shared<Buffer>();
@@ -99,7 +99,7 @@ namespace videocore { namespace Apple {
             in.mBytesPerPacket = in.mBytesPerFrame * in.mFramesPerPacket;
             
             out.mFormatID = kAudioFormatLinearPCM;
-            out.mFormatFlags =  kAudioFormatFlagIsFloat | kAudioFormatFlagIsPacked | kAudioFormatFlagIsNonInterleaved;
+            out.mFormatFlags =  kAudioFormatFlagIsSignedInteger | kAudioFormatFlagsNativeEndian | kAudioFormatFlagIsPacked;
             out.mChannelsPerFrame = m_outChannelCount;
             out.mSampleRate = m_outFrequencyInHz;
             out.mBitsPerChannel = m_outBitsPerChannel;
