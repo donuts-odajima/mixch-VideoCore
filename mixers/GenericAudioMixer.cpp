@@ -207,7 +207,8 @@ namespace videocore {
                     auto it = m_lastSampleTime.find(hash);
                     
                     if(it != m_lastSampleTime.end() && (mixTime - it->second) < std::chrono::microseconds(int64_t(m_frameDuration * 0.25e6f))) {
-                        mixTime = it->second;
+//                        mixTime = it->second;
+                        DLog("(mixtime - lastSampleTime) < frameDuration * 0.25!\n");
                     }
                     
                     size_t startOffset = 0;
@@ -219,10 +220,11 @@ namespace videocore {
                     }
                 
                     auto diff = std::chrono::duration_cast<std::chrono::microseconds>(mixTime - window->start).count();
-                    diff = 0;
+
                     if(diff > 0) {
                         startOffset = size_t((float(diff) / 1.0e6f) * m_outFrequencyInHz * m_bytesPerSample) & ~(m_bytesPerSample-1);
-                        DLog("startOffset = %d.\n", startOffset);
+                        auto mixTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(mixTime).count();
+                        DLog("startOffset = %d. MixTime: %d ms.\n", startOffset, mixTimeMs);
                         while ( startOffset >= window->size ) {
                             startOffset = (startOffset - window->size);
                             window = window->next;
@@ -420,7 +422,7 @@ namespace videocore {
                 
                 auto currentTime = m_nextMixTime;
                 auto diff = std::chrono::duration_cast<std::chrono::milliseconds>(now - m_currentWindow->next->start).count();
-                DLog("Now and nextWindow diff: %d.\n", diff);
+                DLog("Now and nextWindow diff: %d ms.\n", diff);
                 
                 MixWindow* currentWindow = m_currentWindow;
                 MixWindow* nextWindow = currentWindow->next;
