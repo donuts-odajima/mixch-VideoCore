@@ -219,7 +219,7 @@ namespace videocore {
                     
                     if(diff > 0) {
                         startOffset = size_t((float(diff) / 1.0e6f) * m_outFrequencyInHz * m_bytesPerSample) & ~(m_bytesPerSample-1);
-                        
+                        DLog("diff: %d, anotherDiff: %d, startOffset = %d.\n", diff, anotherDiff, startOffset);
                         while ( startOffset >= window->size ) {
                             startOffset = (startOffset - window->size);
                             window = window->next;
@@ -229,8 +229,6 @@ namespace videocore {
                     } else {
                         startOffset = 0;
                     }
-                    
-                    DLog("diff: %d, anotherDiff: %d, startOffset = %d.\n", diff, anotherDiff, startOffset);
                     
                     auto sampleDuration = double(ret->size()) / double(m_bytesPerSample * m_outFrequencyInHz);
 
