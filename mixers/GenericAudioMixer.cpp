@@ -219,11 +219,11 @@ namespace videocore {
                     }
                 
                     auto diff = std::chrono::duration_cast<std::chrono::microseconds>(mixTime - window->start).count();
-                    auto anotherDiff = std::chrono::duration_cast<std::chrono::microseconds>(cMixTime - window->start).count();
+                    auto realDiff = std::chrono::duration_cast<std::chrono::microseconds>(cMixTime - window->start).count();
                     
                     if(diff > 0) {
                         startOffset = size_t((float(diff) / 1.0e6f) * m_outFrequencyInHz * m_bytesPerSample) & ~(m_bytesPerSample-1);
-                        DLog("diff: %d, anotherDiff: %d, mixTime - cMixTime: %d, startOffset = %d.\n", diff, anotherDiff, diff - anotherDiff, startOffset);
+                        DLog("diff: %d, readDiff: %d, mixTime - cMixTime: %d, startOffset = %d.\n", diff, realDiff, diff - realDiff, startOffset);
                         while ( startOffset >= window->size ) {
                             startOffset = (startOffset - window->size);
                             window = window->next;
@@ -263,8 +263,12 @@ namespace videocore {
                             so = 0;
                         }
                     }
-                    m_lastSampleTime[hash] = mixTime + std::chrono::microseconds(int64_t(sampleDuration*1.0e6));
                     
+                    if ((diff - realDiff) > 10000) {
+                        m_lastSampleTime[hash] = cMixTime + std::chrono::microseconds(int64_t(sampleDuration*1.0e6));
+                    } else {
+                        m_lastSampleTime[hash] = mixTime + std::chrono::microseconds(int64_t(sampleDuration*1.0e6));
+                    }
                 });
 
             }
