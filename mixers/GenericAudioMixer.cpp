@@ -223,7 +223,7 @@ namespace videocore {
                         DLog("mixTime - lastSampleTime > m_frameDuration * 0.25!!!\n");
                         
                         auto sampleDuration = double(ret->size()) / double(m_bytesPerSample * m_outFrequencyInHz);
-                        m_lastSampleTime[hash] = mixTime + std::chrono::microseconds(int64_t(sampleDuration*1.0e6));
+                        m_lastSampleTime[hash] = cMixTime + std::chrono::microseconds(int64_t(sampleDuration*1.0e6));
                         needCalcOffset = true;
                         if (it != m_lastSampleTime.end()) {
                             // AudioFrames drop
@@ -247,7 +247,7 @@ namespace videocore {
                         if (startOffset > 2000) {
                             // still drop
                             auto sampleDuration = double(ret->size()) / double(m_bytesPerSample * m_outFrequencyInHz);
-                            m_lastSampleTime[hash] = mixTime + std::chrono::microseconds(int64_t(sampleDuration*1.0e6));
+                            m_lastSampleTime[hash] = cMixTime + std::chrono::microseconds(int64_t(sampleDuration*1.0e6));
                             // AudioFrames drop
                             DLog("Still Drop Audio Frames!!! startOffset: %d\n", startOffset);
                             return;
@@ -291,7 +291,7 @@ namespace videocore {
                             so = 0;
                         }
                     }
-                    m_lastSampleTime[hash] = mixTime + std::chrono::microseconds(int64_t(sampleDuration*1.0e6));
+                    m_lastSampleTime[hash] = cMixTime + std::chrono::microseconds(int64_t(sampleDuration*1.0e6));
                     
                 });
 
