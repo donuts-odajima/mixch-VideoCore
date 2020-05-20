@@ -170,6 +170,7 @@ namespace videocore {
 
         std::map < std::size_t, float > m_inGain;
         std::map < std::size_t, std::chrono::steady_clock::time_point > m_lastSampleTime;
+        std::map < std::size_t, std::size_t> m_lastStartOffset;
         
         int m_outChannelCount;
         int m_outFrequencyInHz;

@@ -206,36 +206,32 @@ namespace videocore {
                     
                     auto it = m_lastSampleTime.find(hash);
                     
+                    size_t startOffset = 0;
+                    MixWindow* window = currentWindow;
+                    auto lastStartOffset = m_lastStartOffset.find(hash);
+
                     if(it != m_lastSampleTime.end() && (mixTime - it->second) < std::chrono::microseconds(int64_t(m_frameDuration * 0.25e6f))) {
                         mixTime = it->second;
+                        startOffset = lastStartOffset->second:
                     } else {
                         // 期待した次のmix時間とのズレが多い場合、startOffsetを再計算する
-                        if (it != m_lastSampleTime.end()) {
-                            DLog("mixTime - lastSampleTime > m_frameDuration * 0.25!!!\n");
-                        }
-                    }
-                    
-                    size_t startOffset = 0;
-                
-                    MixWindow* window = currentWindow;
-                    MixWindow* realCurrentWindow = m_currentWindow;
-                    if (window != realCurrentWindow) {
-                        DLog("Target window is not currentWindow!\n");
-                    }
-                
-                    auto diff = std::chrono::duration_cast<std::chrono::microseconds>(mixTime - window->start).count();
+                        DLog("mixTime - lastSampleTime > m_frameDuration * 0.25!!!\n");
+                        auto diff = std::chrono::duration_cast<std::chrono::microseconds>(mixTime - window->start).count();
 
-                    if(diff > 0) {
-                        startOffset = size_t((float(diff) / 1.0e6f) * m_outFrequencyInHz * m_bytesPerSample) & ~(m_bytesPerSample-1);
-                        auto mixTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(mixTime.time_since_epoch()).count();
-                        DLog("startOffset = %d. MixTime: %d ms.\n", startOffset, mixTimeMs);
-                        while ( startOffset >= window->size ) {
-                            startOffset = (startOffset - window->size);
-                            window = window->next;
+                        if(diff > 0) {
+                            startOffset = size_t((float(diff) / 1.0e6f) * m_outFrequencyInHz * m_bytesPerSample) & ~(m_bytesPerSample-1);
+                            
+                            m_lastStartOffset[hash] = startOffset;
+                        } else {
+                            startOffset = 0;
                         }
-                        
-                    } else {
-                        startOffset = 0;
+                    }
+
+                    auto mixTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(mixTime.time_since_epoch()).count();
+                    DLog("startOffset = %d. MixTime: %d ms.\n", startOffset, mixTimeMs);
+                    while ( startOffset >= window->size ) {
+                        startOffset = (startOffset - window->size);
+                        window = window->next;
                     }
                     
                     auto sampleDuration = double(ret->size()) / double(m_bytesPerSample * m_outFrequencyInHz);
