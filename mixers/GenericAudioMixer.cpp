@@ -210,12 +210,25 @@ namespace videocore {
                     MixWindow* window = currentWindow;
                     auto lastStartOffset = m_lastStartOffset.find(hash);
 
+                    static bool needCalcOffset = false;
                     if(it != m_lastSampleTime.end() && (mixTime - it->second) < std::chrono::microseconds(int64_t(m_frameDuration * 0.25e6f))) {
                         mixTime = it->second;
                         startOffset = lastStartOffset->second;
                     } else {
-                        // 期待した次のmix時間とのズレが多い場合、startOffsetを再計算する
+                        // 期待した次のmix時間とのズレが多い場合、audioFramesをdrop、startOffsetを再計算する
                         DLog("mixTime - lastSampleTime > m_frameDuration * 0.25!!!\n");
+                        
+                        auto sampleDuration = double(ret->size()) / double(m_bytesPerSample * m_outFrequencyInHz);
+                        m_lastSampleTime[hash] = mixTime + std::chrono::microseconds(int64_t(sampleDuration*1.0e6))
+                        needCalcOffset = true;
+                        if (it != m_lastSampleTime.end()) {
+                            // AudioFrames drop
+                            DLog("Drop Audio Frames!!!\n");
+                            return;
+                        }
+                    }
+                    
+                    if (needCalcOffset) {
                         auto diff = std::chrono::duration_cast<std::chrono::microseconds>(mixTime - window->start).count();
 
                         if(diff > 0) {
@@ -225,6 +238,7 @@ namespace videocore {
                         } else {
                             startOffset = 0;
                         }
+                        needCalcOffset = false;
                     }
 
                     auto mixTimeMs = std::chrono::duration_cast<std::chrono::milliseconds>(mixTime.time_since_epoch()).count();
