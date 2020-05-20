@@ -207,8 +207,12 @@ namespace videocore {
                     auto it = m_lastSampleTime.find(hash);
                     
                     if(it != m_lastSampleTime.end() && (mixTime - it->second) < std::chrono::microseconds(int64_t(m_frameDuration * 0.25e6f))) {
-//                        mixTime = it->second;
-                        DLog("(mixtime - lastSampleTime) < frameDuration * 0.25!\n");
+                        mixTime = it->second;
+                    } else {
+                        // 期待した次のmix時間とのズレが多い場合、startOffsetを再計算する
+                        if (it != m_lastSampleTime.end()) {
+                            DLog("mixTime - lastSampleTime > m_frameDuration * 0.25!!!\n");
+                        }
                     }
                     
                     size_t startOffset = 0;
