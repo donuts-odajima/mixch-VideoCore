@@ -219,7 +219,7 @@ namespace videocore {
                         DLog("mixTime - lastSampleTime > m_frameDuration * 0.25!!!\n");
                         
                         auto sampleDuration = double(ret->size()) / double(m_bytesPerSample * m_outFrequencyInHz);
-                        m_lastSampleTime[hash] = mixTime + std::chrono::microseconds(int64_t(sampleDuration*1.0e6))
+                        m_lastSampleTime[hash] = mixTime + std::chrono::microseconds(int64_t(sampleDuration*1.0e6));
                         needCalcOffset = true;
                         if (it != m_lastSampleTime.end()) {
                             // AudioFrames drop
