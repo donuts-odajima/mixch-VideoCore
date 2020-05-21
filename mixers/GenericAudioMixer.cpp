@@ -210,7 +210,8 @@ namespace videocore {
                     auto d = std::chrono::microseconds(int64_t(m_frameDuration * 0.25e6f));
                     auto frameDurationDiff = std::chrono::duration_cast<std::chrono::microseconds>(d).count();
                     DLog("mixDiff: %d, frameDurationDiff: %d.\n", mixDiff, frameDurationDiff);
-                    if(it != m_lastSampleTime.end() && (mixTime - it->second) < std::chrono::microseconds(int64_t(m_frameDuration * 0.25e6f))) {
+                    // when time pass (mixTime - it->second) will be negative number, use abs to compare
+                    if(it != m_lastSampleTime.end() && std::chrono::abs(mixTime - it->second) < std::chrono::microseconds(int64_t(m_frameDuration * 0.25e6f))) {
                         mixTime = it->second;
                     } else {
                         DLog("(mixTime - lastSampleTime) > frameDuration * 0.25\n");
@@ -219,14 +220,10 @@ namespace videocore {
                     size_t startOffset = 0;
                 
                     MixWindow* window = currentWindow;
-                    if (window != m_currentWindow) {
-                        DLog("Window is not current!!!\n");
-                        window = m_currentWindow;
-                    }
                 
                     auto diff = std::chrono::duration_cast<std::chrono::microseconds>(mixTime - window->start).count();
                     auto realDiff = std::chrono::duration_cast<std::chrono::microseconds>(cMixTime - window->start).count();
-                    
+
                     if(diff > 0) {
                         startOffset = size_t((float(diff) / 1.0e6f) * m_outFrequencyInHz * m_bytesPerSample) & ~(m_bytesPerSample-1);
                         DLog("diff: %d, readDiff: %d, mixTime - cMixTime: %d, startOffset = %d.\n", diff, realDiff, diff - realDiff, startOffset);
@@ -241,7 +238,6 @@ namespace videocore {
                     }
                     
                     auto sampleDuration = double(ret->size()) / double(m_bytesPerSample * m_outFrequencyInHz);
-                    DLog("sampleDuration: %lf.\n", sampleDuration);
 
                     const float mult = m_inGain[hash] * g;
                     
@@ -270,12 +266,8 @@ namespace videocore {
                             so = 0;
                         }
                     }
-                    
-                    if ((diff - realDiff) > 10000) {
-                        m_lastSampleTime[hash] = cMixTime + std::chrono::microseconds(int64_t(sampleDuration*1.0e6));
-                    } else {
-                        m_lastSampleTime[hash] = mixTime + std::chrono::microseconds(int64_t(sampleDuration*1.0e6));
-                    }
+                    m_lastSampleTime[hash] = mixTime + std::chrono::microseconds(int64_t(sampleDuration*1.0e6));
+
                 });
 
             }
