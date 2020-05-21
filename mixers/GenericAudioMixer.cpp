@@ -241,6 +241,7 @@ namespace videocore {
                     }
                     
                     auto sampleDuration = double(ret->size()) / double(m_bytesPerSample * m_outFrequencyInHz);
+                    DLog("sampleDuration: %lf.\n", sampleDuration);
 
                     const float mult = m_inGain[hash] * g;
                     
