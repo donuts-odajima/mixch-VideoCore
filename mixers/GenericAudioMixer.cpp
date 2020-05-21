@@ -76,6 +76,13 @@ static const float kE = 2.7182818284590f;
 
 namespace videocore {
 
+    template <class Rep, class Period, class = std::enable_if_t<
+       std::chrono::duration<Rep, Period>::min() < std::chrono::duration<Rep, Period>::zero()>>
+    constexpr std::chrono::duration<Rep, Period> abs(std::chrono::duration<Rep, Period> d)
+    {
+        return d >= d.zero() ? d : -d;
+    }
+
     inline int16_t TPMixSamples(int16_t a, int16_t b) {
         return
         // If both samples are negative, mixed signal must have an amplitude between the lesser of A and B, and the minimum permissible negative amplitude
@@ -211,7 +218,7 @@ namespace videocore {
                     auto frameDurationDiff = std::chrono::duration_cast<std::chrono::microseconds>(d).count();
                     DLog("mixDiff: %d, frameDurationDiff: %d.\n", mixDiff, frameDurationDiff);
                     // when time pass (mixTime - it->second) will be negative number, use abs to compare
-                    if(it != m_lastSampleTime.end() && std::chrono::abs(mixTime - it->second) < std::chrono::microseconds(int64_t(m_frameDuration * 0.25e6f))) {
+                    if(it != m_lastSampleTime.end() && abs(mixTime - it->second) < std::chrono::microseconds(int64_t(m_frameDuration * 0.25e6f))) {
                         mixTime = it->second;
                     } else {
                         DLog("(mixTime - lastSampleTime) > frameDuration * 0.25\n");
