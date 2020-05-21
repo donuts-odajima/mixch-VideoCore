@@ -207,7 +207,8 @@ namespace videocore {
                     auto it = m_lastSampleTime.find(hash);
                     
                     auto mixDiff = std::chrono::duration_cast<std::chrono::microseconds>(mixTime - it->second).count();
-                    auto frameDurationDiff = std::chrono::duration_cast<std::chrono::microseconds>(int64_t(m_frameDuration * 0.25e6f)).count();
+                    auto d = std::chrono::microseconds(int64_t(m_frameDuration * 0.25e6f));
+                    auto frameDurationDiff = std::chrono::duration_cast<std::chrono::microseconds>(d).count();
                     DLog("mixDiff: %d, frameDurationDiff: %d.\n", mixDiff, frameDurationDiff);
                     if(it != m_lastSampleTime.end() && (mixTime - it->second) < std::chrono::microseconds(int64_t(m_frameDuration * 0.25e6f))) {
                         mixTime = it->second;
