@@ -1022,6 +1022,8 @@ namespace videocore
                 setClientState(kClientStateSessionStarted);
                 
                 m_throughputSession.start();
+            } else if (code == "NetStream.Publish.BadName") {
+                setClientState(kClientStateBadName);
             }
         }
         

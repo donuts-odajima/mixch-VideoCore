@@ -43,7 +43,8 @@ typedef enum {
     kClientStateReady           =8,
     kClientStateSessionStarted  =9,
     kClientStateError           =10,
-    kClientStateNotConnected    =11
+    kClientStateNotConnected    =11,
+    kClientStateBadName         =12
 } ClientState_t;
 
 
