@@ -92,7 +92,7 @@ namespace videocore { namespace iOS {
 
         __block MicSource* bThis = this;
 
-        PermissionBlock permission = ^(BOOL granted) {
+        void (^permission)(BOOL) = ^(BOOL granted) {
             if(granted) {
 
                 [session setCategory:AVAudioSessionCategoryPlayAndRecord error:nil];
